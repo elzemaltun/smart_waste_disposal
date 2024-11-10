@@ -1,18 +1,48 @@
 #include <Arduino.h>
 
-// put function declarations here:
-int myFunction(int, int);
+enum state{
+  INITIAL_STATE,
+  SLEEP_MODE,
+  USER_DETECTED,
+  IS_OPENING,
+  IS_CLOSING,
+  IS_FULL,  
+  IS_EMPTYING,
+  ERROR_STATE
+};
+
+state current_state = INITIAL_STATE;
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+  Serial.begin(9600);  
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  switch(current_state) {
+    case INITIAL_STATE:
+      //
+      break;
+    case SLEEP_MODE:
+      //
+      break;
+    case USER_DETECTED:
+      //
+      break;
+    case IS_OPENING:
+      //
+      break;
+    case IS_CLOSING:
+      //
+      break;
+    case IS_FULL:
+      //
+      break;
+    case IS_EMPTYING:
+      //
+      break;
+    case ERROR_STATE:
+      //
+      break;
+  };
 }
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
-}
