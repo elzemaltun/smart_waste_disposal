@@ -1,7 +1,7 @@
 #ifndef __SERVOCONTROLLER__
 #define __SERVOCONTROLLER__
 
-#include <Servo.h>
+#include <ServoTimer2.h>  // Include ServoTimer2 library
 
 class ServoController {
 public:
@@ -13,7 +13,7 @@ public:
 
 private:
     int pin;
-    Servo servo;
+    ServoTimer2 servo;  // Use ServoTimer2 to control the servo
 };
 
 #endif
