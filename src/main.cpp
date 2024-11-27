@@ -1,12 +1,27 @@
 #include <Arduino.h>
+#include "Button.h"
+#include "ServoController.h"
 #include "blink_led_task.h"
 #include "scheduler.h"
 #include "pir_sensor.h"
 #include "sonar_sensor.h"
 
+// --- Pin Definitions ---
+#define OPEN_BUTTON_PIN 6
+#define CLOSE_BUTTON_PIN 7
+#define SERVO_PIN 9
+#define RED_LED_PIN 13
+#define GREEN_LED_PIN 12
+
+// --- Objects ---
+Button openButton(OPEN_BUTTON_PIN);
+Button closeButton(CLOSE_BUTTON_PIN);
+ServoController servoController(SERVO_PIN);
+
 Scheduler sched;
 BlinkTask* blinkTask;
 
+// --- States ---
 bool errorDetected = false;
 bool userDetected = true;
 
