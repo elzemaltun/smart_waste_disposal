@@ -3,6 +3,8 @@
 #include "ServoController.h"
 #include "blink_led_task.h"
 #include "scheduler.h"
+#include "pir_sensor.h"
+#include "sonar_sensor.h"
 
 // --- Pin Definitions ---
 #define OPEN_BUTTON_PIN 6
@@ -24,60 +26,39 @@ bool errorDetected = false;
 bool userDetected = true;
 
 void setup() {
-    // Serial Initialization
-    Serial.begin(9600);
-
-    // --- Waste Door Control Initialization ---
-    openButton.init();
-    closeButton.init();
-    servoController.init();
-
-    // --- LED Blink and Scheduler Initialization ---
-    sched.init(50);
-    blinkTask = new BlinkTask(RED_LED_PIN, GREEN_LED_PIN);
-    blinkTask->init(100); // Period set to 100ms
-    sched.addTask(blinkTask);
+  Serial.begin(9600);
+  /* sched.init(50);
+  blinkTask = new BlinkTask(13, 12); // Red LED on pin 13, Green LED on pin 12
+  blinkTask->init(100); // Period set to 100ms 
+  sched.addTask(blinkTask); */
 }
 
 void loop() {
-    // --- Waste Door Control Section ---
-    if (openButton.isPressed()) {
-        servoController.openDoor();
-        Serial.println("Door opened for waste.");
-    }
+  // Example: Update states based on sensor data
+/*   if (errorDetected) {
+    blinkTask->setState(BlinkTask::RED_ON);
+  } else if (userDetected) {
+    blinkTask->setState(BlinkTask::GREEN_ON);
+  } else {
+    blinkTask->setState(BlinkTask::OFF);
+  }
+  sched.schedule();
+ */
 
-    if (closeButton.isPressed()) {
-        servoController.closeDoor();
-        Serial.println("Door closed after waste.");
-    }
+  sonarSensorCheck(); 
+  pirSensorCheck(); 
+  
+}
 
-    // Uncomment for servo operation testing
-    /*
-    servoController.openDoor();
-    Serial.println("Door opened for waste.");
-    delay(1000);
-    servoController.closeDoor();
-    Serial.println("Door closed after waste.");
-    delay(1000);
-    servoController.emptyContainer();
-    Serial.println("Container emptied.");
-    delay(1000);
-    servoController.closeDoor();
-    Serial.println("Container emptied.");
-    delay(1000);
-    */
+void sonarSensorCheck() {
+  SonarSensor sonarSensor;
+  sonarSensor.init(2, 3);
+  Serial.println(sonarSensor.checkWasteLevel(2, 3));
+  //Serial.println(sonarSensor.getDistance(2, 3));
+}
 
-    // --- LED Blink and Scheduler Section ---
-    if (errorDetected) {
-        blinkTask->setState(BlinkTask::RED_ON);
-        Serial.println("This is RED state if statement");
-    } else if (userDetected) {
-        blinkTask->setState(BlinkTask::GREEN_ON);
-        Serial.println("This is GREEN state if statement");
-    } else {
-        blinkTask->setState(BlinkTask::OFF);
-        Serial.println("This is OFF state if statement");
-    }
-
-    sched.schedule();
+void pirSensorCheck() {
+  PirSensor pirSensor;
+  pirSensor.init(7);
+  Serial.println(pirSensor.isMotionDetected(7)); 
 }
