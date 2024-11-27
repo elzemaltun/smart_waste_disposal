@@ -16,9 +16,9 @@ void ServoController::openDoor(int angle) {
     servo.write(angle); // Open door
 }
 
-void ServoController::closeDoor() {
+void ServoController::closeDoor(int angle) {
     Serial.println("Closing door...");
-    servo.write(0); // Close door
+    servo.write(angle); // Close door
 }
 
 void ServoController::emptyContainer(int angle) {
