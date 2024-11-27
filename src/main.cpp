@@ -25,6 +25,9 @@ BlinkTask* blinkTask;
 bool errorDetected = false;
 bool userDetected = true;
 
+void pirSensorCheck(void);
+void sonarSensorCheck(void);
+
 void setup() {
   Serial.begin(9600);
   /* sched.init(50);
