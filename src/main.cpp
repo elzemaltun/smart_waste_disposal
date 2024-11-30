@@ -7,6 +7,7 @@
 #include "scheduler.h"
 #include "pir_sensor.h"
 #include "sonar_sensor.h"
+#include "Debug.h"
 
 // --- Pin Definitions ---
 #define OPEN_BUTTON_PIN 6
@@ -59,7 +60,7 @@ void pirSensorCheck();
 void sonarSensorCheck();
 
 void setup() {
-    Serial.begin(9600);
+    Debugger.begin(9600);
 
     // Initialize LCD
     lcd.init();
@@ -69,7 +70,7 @@ void setup() {
     openButton.init();
     closeButton.init();
     servoController.init();
-    Serial.println("Temperature Monitor Initialized");
+    Debugger.println("Temperature Monitor Initialized");
 
     // Initialize PIR and Sonar Sensors
     pirSensor.init(7);    // PIR Sensor on pin 7
@@ -81,7 +82,7 @@ void setup() {
     blinkTask->init(100); // Blink task period set to 100ms
     sched.addTask(blinkTask);
 
-    Serial.println("System Initialized");
+    Debugger.println("System Initialized");
 }
 
 void loop() {
@@ -91,7 +92,7 @@ void loop() {
     testServoSequence();  // Test servo sequence
     pirSensorCheck();     // Check PIR sensor for motion detection
     sonarSensorCheck();   // Check Sonar sensor for waste level
-    sched.schedule();     // Scheduler for LED blink task
+    //sched.schedule();     // Scheduler for LED blink task
 }
 
 /**
@@ -99,7 +100,7 @@ void loop() {
  */
 void initializeLCD() {
     lcd.displayPressOpen();
-    Serial.println("LCD Initialized with 'Press Open' message.");
+    Debugger.println("LCD Initialized with 'Press Open' message.");
 }
 
 /**
@@ -113,31 +114,31 @@ void testLCDSequence() {
 
         switch (lcdTestState) {
         case 0:
-            Serial.println("Displaying: Press Open to Enter Waste");
+            Debugger.println("Displaying: Press Open to Enter Waste");
             lcd.displayPressOpen();
             break;
         case 1:
-            Serial.println("Displaying: Press Close When Done");
+            Debugger.println("Displaying: Press Close When Done");
             lcd.displayPressClose();
             break;
         case 2:
-            Serial.println("Displaying: Waste Received");
+            Debugger.println("Displaying: Waste Received");
             lcd.displayWasteReceived();
             break;
         case 3:
-            Serial.println("Displaying: Container Full");
+            Debugger.println("Displaying: Container Full");
             lcd.displayContainerFull();
             break;
         case 4:
-            Serial.println("Displaying: Problem Detected");
+            Debugger.println("Displaying: Problem Detected");
             lcd.displayProblemDetected();
             break;
         case 5:
-            Serial.println("Turning LCD Off");
+            Debugger.println("Turning LCD Off");
             lcd.lcdPowerOff();
             break;
         default:
-            Serial.println("Restarting LCD Test Sequence...");
+            Debugger.println("Restarting LCD Test Sequence...");
             lcdTestState = -1;
             break;
         }
@@ -158,15 +159,15 @@ void checkTemperature() {
         float temperatureC = tempMonitor.readTemperatureC();
         bool thresholdExceeded = tempMonitor.isThresholdExceeded();
 
-        Serial.print("Temperature: ");
-        Serial.print(temperatureC);
-        Serial.println(" °C");
+        Debugger.print("Temperature: ");
+        Debugger.print(temperatureC);
+        Debugger.println(" °C");
 
         if (thresholdExceeded) {
-            Serial.println("WARNING: Temperature threshold exceeded!");
+            Debugger.println("WARNING: Temperature threshold exceeded!");
             errorDetected = true;
         } else {
-            Serial.println("Temperature is within the safe range.");
+            Debugger.println("Temperature is within the safe range.");
             errorDetected = false;
         }
     }
@@ -178,12 +179,12 @@ void checkTemperature() {
 void handleButtonActions() {
     if (openButton.isPressed()) {
         servoController.openDoor();
-        Serial.println("Door opened for waste.");
+        Debugger.println("Door opened for waste.");
     }
 
     if (closeButton.isPressed()) {
         servoController.closeDoor();
-        Serial.println("Door closed after waste.");
+        Debugger.println("Door closed after waste.");
     }
 }
 
@@ -199,22 +200,22 @@ void testServoSequence() {
         switch (servoTestState) {
         case 0:
             servoController.openDoor();
-            Serial.println("Servo Test: Door opened.");
+            Debugger.println("Servo Test: Door opened.");
             break;
         case 1:
             servoController.closeDoor();
-            Serial.println("Servo Test: Door closed.");
+            Debugger.println("Servo Test: Door closed.");
             break;
         case 2:
             servoController.emptyContainer();
-            Serial.println("Servo Test: Container emptied.");
+            Debugger.println("Servo Test: Container emptied.");
             break;
         case 3:
             servoController.closeDoor();
-            Serial.println("Servo Test: Container re-closed.");
+            Debugger.println("Servo Test: Container re-closed.");
             break;
         default:
-            Serial.println("Servo Test Sequence Complete. Restarting...");
+            Debugger.println("Servo Test Sequence Complete. Restarting...");
             servoTestState = -1;
             break;
         }
@@ -228,10 +229,10 @@ void testServoSequence() {
  */
 void pirSensorCheck() {
     if (pirSensor.isMotionDetected(7)) {
-        Serial.println("PIR Sensor: Motion Detected!");
+        Debugger.println("PIR Sensor: Motion Detected!");
         userDetected = true;
     } else {
-        Serial.println("PIR Sensor: No Motion Detected.");
+        Debugger.println("PIR Sensor: No Motion Detected.");
         userDetected = false;
     }
 }
@@ -241,15 +242,15 @@ void pirSensorCheck() {
  */
 void sonarSensorCheck() {
     float distance = sonarSensor.getDistance(2, 3);
-    Serial.print("Sonar Sensor: Distance = ");
-    Serial.print(distance);
-    Serial.println(" cm");
+    Debugger.print("Sonar Sensor: Distance = ");
+    Debugger.print(distance);
+    Debugger.println(" cm");
 
     if (distance < 10.0) { // Example threshold
-        Serial.println("Sonar Sensor: Waste level high!");
+        Debugger.println("Sonar Sensor: Waste level high!");
         errorDetected = true;
     } else {
-        Serial.println("Sonar Sensor: Waste level okay.");
+        Debugger.println("Sonar Sensor: Waste level okay.");
         errorDetected = false;
     }
 }

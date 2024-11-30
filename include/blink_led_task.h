@@ -3,6 +3,7 @@
 
 #include "Task.h"
 #include "Led.h"
+#include "Debug.h"
 
 class BlinkTask: public Task {
 

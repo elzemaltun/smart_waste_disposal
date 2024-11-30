@@ -15,22 +15,22 @@ void BlinkTask::init(int period){
   
 void BlinkTask::tick(){
 
-  Serial.print("this is a tick");
+  Debugger.print("this is a tick");
   switch (state) {
     case OFF: // Both LEDs are off
-    Serial.print("please work");
+    Debugger.print("please work");
       led_red->switchOff();
       led_green->switchOff();
       break;
 
     case RED_ON: // Red LED on, Green LED off
-      Serial.print("this is red state");
+      Debugger.print("this is red state");
       led_red->switchOn();
       led_green->switchOff();
       break;
 
     case GREEN_ON: // Green LED on, Red LED off
-      Serial.print("this is green state");
+      Debugger.print("this is green state");
       led_red->switchOff();
       led_green->switchOn();
       break;

@@ -1,6 +1,8 @@
 #ifndef __TASK__
 #define __TASK__
 
+#include "Debug.h"
+
 class Task {
   int myPeriod;
   int timeElapsed;

@@ -3,6 +3,7 @@
 
 #include "timer.h"
 #include "task.h"
+#include "Debug.h"
 
 #define MAX_TASKS 10
 

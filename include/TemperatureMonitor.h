@@ -2,6 +2,7 @@
 #define TEMPERATUREMONITOR_H
 
 #include <Arduino.h>
+#include "Debug.h"
 
 class TemperatureMonitor {
 private:

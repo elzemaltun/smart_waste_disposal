@@ -2,6 +2,7 @@
 #define __BUTTON__
 
 #include <Arduino.h>
+#include "Debug.h"
 
 class Button {
 public:
