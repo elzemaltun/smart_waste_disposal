@@ -7,21 +7,21 @@ ServoController::ServoController(int pin) {
 
 void ServoController::init() {
     servo.attach(pin);
-    Serial.println("Servo initialized");
+    Debugger.println("Servo initialized");
     closeDoor(); // Start with door closed
 }
 
 void ServoController::openDoor(int angle) {
-    Serial.println("Opening door...");
+    Debugger.println("Opening door...");
     servo.write(angle); // Open door
 }
 
 void ServoController::closeDoor(int angle) {
-    Serial.println("Closing door...");
+    Debugger.println("Closing door...");
     servo.write(angle); // Close door
 }
 
 void ServoController::emptyContainer(int angle) {
-    Serial.println("Emptying container...");
+    Debugger.println("Emptying container...");
     servo.write(angle); // Move door in reverse direction
 }

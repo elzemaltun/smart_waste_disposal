@@ -2,6 +2,7 @@
 #define __LED__
 
 #include "light.h"
+#include "Debug.h"
 
 class Led: public Light { 
 public:

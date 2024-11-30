@@ -2,6 +2,7 @@
 #define __SERVOCONTROLLER__
 
 #include "ServoTimer2.h"  // Include ServoTimer2 library
+#include "Debug.h"
 
 class ServoController {
 public:
