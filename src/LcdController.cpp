@@ -4,6 +4,7 @@ LcdController::LcdController(uint8_t address, uint8_t cols, uint8_t rows)
     : lcd(address, cols, rows), lcdCols(cols), lcdRows(rows) {}
 
 void LcdController::init() {
+    lcd.init();
     lcd.begin(lcdCols, lcdRows); // Correctly specify dimensions
     lcd.backlight();
 }

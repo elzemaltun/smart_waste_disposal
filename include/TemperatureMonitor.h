@@ -25,4 +25,4 @@ public:
     bool isThresholdExceeded();
 };
 
-#endif // TEMPERATUREMONITOR_H
+#endif 
