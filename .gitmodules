@@ -1,0 +1,3 @@
+[submodule "swd_gui"]
+    path = swd_gui
+    url = https://github.com/elzemaltun/swd_gui.git
