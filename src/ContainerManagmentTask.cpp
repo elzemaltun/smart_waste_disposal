@@ -49,8 +49,14 @@ void ContainerManagementTask::setState(State newState) {
             break;
 
         case SLEEP:
-            availableLed->switchOn();  // Keep L1 ON
+
+            //availableLed->switchOn();  // Keep L1 ON
             Debugger.println("Entered SLEEP state");
+
+            enterSleepMode();
+
+            setState(READY);    
+
             break;
 
         case READY:
@@ -130,12 +136,7 @@ void ContainerManagementTask::tick() {
             break;
 
         case SLEEP:
-            // Periodically check for motion
-            // ENABLE INTERRUPT LATER!!!!
-            if (motionSense->isMotionDetected(2)) {
-                setState(READY);
-                return;
-            }
+            // handled in set state
             break;
 
         case READY:
@@ -178,11 +179,14 @@ void ContainerManagementTask::tick() {
         case FULL:
             // Wait for GUI "EMPTY" command (simulated here with a placeholder)
             // In a real system, this would be replaced with an actual GUI command
-            setState(EMPTY_CONTAINER);
+            // Wait 10 seconds before emptying the container | no gui test
+            if (millis() - lastStateChangeTime > TEST_EMPTY_CONTAINER_TIMELIMIT) {
+                setState(EMPTY_CONTAINER);
+            }
             return;
 
         case EMPTY_CONTAINER:
-            // Check if emptying is complete
+            // allow the container to be empty before returning to READY
             if (millis() - lastStateChangeTime > EMPTY_CONTAINER_TIME) {
                 setState(READY);
                 return;
@@ -191,8 +195,28 @@ void ContainerManagementTask::tick() {
 
         case OVER_TEMP:
             // Wait for GUI "RESTORE" command (simulated here with a placeholder)
-            // In a real system, this would be replaced with an actual GUI command
-            setState(READY);
+            // Wait 10 seconds before returning to READY
+            if (millis() - lastStateChangeTime > TEST_OVER_TEMP_TIMELIMIT) {
+                setState(READY);
+            }
             return;
     }
+}
+
+void ContainerManagementTask::enterSleepMode() {
+    
+    Debugger.println("Turning on sleep mode");
+    
+    motionSense->enableInterrupt();
+    availableLed->switchOn();   // L1 ON
+    display->lcdPowerOff();
+
+    set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+    sleep_enable();
+    sleep_mode();
+  
+    // Execution resumes here after wake-up
+    sleep_disable();
+    motionSense->disableInterrupt();
+    display->lcdPowerOff();
 }

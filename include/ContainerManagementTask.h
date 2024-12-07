@@ -2,6 +2,7 @@
 #define __CONTAINER_MANAGEMENT_TASK_H
 
 #include <Arduino.h>
+#include <avr/sleep.h>
 #include "Task.h"
 #include "Button.h"
 #include "LcdController.h"
@@ -43,6 +44,10 @@ private:
     static constexpr float MAX_TEMP = 50.0;                     // Maximum temperature threshold
     static constexpr float WASTE_LEVEL_THRESHOLD = 0.3;         // Waste level threshold (from sonar implementation)
 
+    //test simulation defintiion
+    #define TEST_EMPTY_CONTAINER_TIMELIMIT  10000 // wait for 10 seconds before emptying the container | no gui test
+    #define TEST_OVER_TEMP_TIMELIMIT        10000 // wait for 10 seconds before going to ready | no gui test
+
     // Component instances
     Button* doorOpenButton;
     Button* doorCloseButton;
@@ -63,6 +68,8 @@ private:
 
     // Helper methods
     bool isContainerFull();
+
+    void enterSleepMode();
 };
 
 #endif // CONTAINER_MANAGEMENT_TASK_H

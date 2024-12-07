@@ -7,6 +7,8 @@ class PirSensor {
 public:
     void init(int pin);
     bool isMotionDetected(int pin);
+    void enableInterrupt();
+    void disableInterrupt();
 
 private:
     bool motionDetected;

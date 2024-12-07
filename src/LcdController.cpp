@@ -53,3 +53,7 @@ void LcdController::lcdPowerOff() {
     lcd.clear();
     lcd.noBacklight(); // Turn off the backlight
 }
+
+void LcdController::lcdPowerOn() {
+    lcd.backlight();
+}

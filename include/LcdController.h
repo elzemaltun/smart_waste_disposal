@@ -20,6 +20,7 @@ public:
     void displayContainerFull();
     void displayProblemDetected();
     void lcdPowerOff();
+    void lcdPowerOn();
 };
 
 #endif // LCDCONTROLLER_H
