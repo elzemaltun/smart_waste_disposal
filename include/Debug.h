@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 // Enable or disable debugging globally
-#define DEBUG_ENABLED true // Set to false to disable debug output
+#define DEBUG_ENABLED false  // Set to false to disable debug output
 
 class Debug {
 public:

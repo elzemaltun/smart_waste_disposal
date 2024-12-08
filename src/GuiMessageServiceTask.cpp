@@ -22,10 +22,12 @@ void GuiMessageServiceTask::tick() {
          case WAIT:
             // Check if there is a message in the queue
             if (!messageQueue.isEmpty()) {
-                Debugger.println("Processing message from queue");
+
+                sendStatus();
+                /* Debugger.println("Processing message from queue");
                 String incomingMessage = messageQueue.dequeue(); // Retrieve the oldest message
                 processIncomingMessage(incomingMessage);
-                currentParseState = PROCESS;
+                currentParseState = PROCESS; */
             }
             break;
 

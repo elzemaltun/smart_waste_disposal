@@ -12,7 +12,8 @@ GuiMessageServiceTask* guiMessageTask;
 
 void setup() {
     // Initialize debug output
-    Debugger.begin(9600);
+    //Debugger.begin(9600);
+    Serial.begin(9600);
     Debugger.println("Container Management System Initializing...");
 
     // Initialize scheduler
