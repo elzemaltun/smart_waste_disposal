@@ -3,6 +3,7 @@
 #include "ContainerManagementTask.h"
 #include "GuiMessageServiceTask.h"
 #include "Debug.h"
+#include "MsgService.h"
 
 // Scheduler and Tasks
 Scheduler sched;
@@ -33,4 +34,13 @@ void setup() {
 void loop() {
     guiMessageTask->readSerial(); // Always read serial data
     sched.schedule();
+    // MsgService.sendMsg("this is arduino debug 1");
+    // if (MsgService.isMsgAvailable()) {
+    //     Msg* msg = MsgService.receiveMsg();    
+    //     if (msg->getContent() == "this is python"){
+    //         delay(500);
+    //         MsgService.sendMsgStr("this is arduino debug 2");
+    //     }        
+    //     delete msg;
+    //}
 }

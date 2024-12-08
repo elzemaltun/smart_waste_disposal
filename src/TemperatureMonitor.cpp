@@ -3,7 +3,7 @@
 // Constructor
 TemperatureMonitor::TemperatureMonitor(uint8_t analogPin, float refVoltage) {
     pin = analogPin;
-    voltageRef = refVoltage;
+    voltageRef = 5.0;
     thresholdExceeded = false; // Initialize the threshold flag
 }
 
@@ -15,12 +15,11 @@ void TemperatureMonitor::updateThresholdStatus(float temperature) {
 // Read temperature in Celsius and check against the threshold
 float TemperatureMonitor::readTemperatureC() {
     int raw = analogRead(pin); // Read raw ADC value
-    float voltage = (raw * voltageRef) / 1023.0; // Convert ADC value to voltage
+    float voltage = (raw * voltageRef) / 1024.0; // Convert ADC value to voltage
     float temperatureC = (voltage - 0.5) * 100.0; // TMP36 conversion formula
 
     // Update the threshold status
     updateThresholdStatus(temperatureC);
-
     return temperatureC;
 }
 
