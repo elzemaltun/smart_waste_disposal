@@ -28,7 +28,7 @@ void MsgServiceClass::init(){
   msgAvailable = false;  
 }
 
-void MsgServiceClass::sendMsg(const String& msg){
+void MsgServiceClass::sendMsgStr(const String& msg){
   Serial.println(msg);  
 }
 

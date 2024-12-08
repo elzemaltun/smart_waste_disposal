@@ -27,12 +27,12 @@ void setup() {
 void loop() {
     sched.schedule();
     // MsgService.sendMsg("this is arduino debug 1");
-    if (MsgService.isMsgAvailable()) {
-        Msg* msg = MsgService.receiveMsg();    
-        if (msg->getContent() == "this is python"){
-            delay(500);
-            MsgService.sendMsg("this is arduino debug 2");
-        }        
-        delete msg;
-    }
+    // if (MsgService.isMsgAvailable()) {
+    //     Msg* msg = MsgService.receiveMsg();    
+    //     if (msg->getContent() == "this is python"){
+    //         delay(500);
+    //         MsgService.sendMsgStr("this is arduino debug 2");
+    //     }        
+    //     delete msg;
+    //}
 }

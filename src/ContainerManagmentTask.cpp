@@ -113,9 +113,9 @@ void ContainerManagementTask::setState(State newState) {
 void ContainerManagementTask::tick() {
     // Check for temperature first (highest priority)
     currentTemp = tempSense->readTemperatureC();
-    
     // Temperature override
     if (currentTemp > MAX_TEMP) {
+        Debugger.println("Over temp!");
         setState(OVER_TEMP);
         return;
     }
