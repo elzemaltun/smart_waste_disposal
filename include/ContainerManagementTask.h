@@ -1,5 +1,5 @@
 #ifndef CONTAINER_MANAGEMENT_TASK_H
-#define __CONTAINER_MANAGEMENT_TASK_H
+#define CONTAINER_MANAGEMENT_TASK_H
 
 #include <Arduino.h>
 #include <avr/sleep.h>
@@ -15,16 +15,7 @@
 class ContainerManagementTask : public Task {
 public:
     ContainerManagementTask();
-    
-    void init(int period) override;
-    void tick() override;
 
-private:
-    // Pin Configurations
-    static constexpr int SONAR_TRIG_PIN = 4;  // Example pin, adjust as needed
-    static constexpr int SONAR_ECHO_PIN = 5;  // Example pin, adjust as needed
-
-    // State machine states
     enum State {
         IDLE,
         SLEEP,
@@ -36,6 +27,25 @@ private:
         OVER_TEMP
     };
 
+
+    void init(int period) override;
+    void tick() override;
+
+    // Add these public methods
+    State getCurrentState();
+    float getCurrentTemperature();
+    int getDoorState();
+    void setState(State newState); // Make this public
+
+    // check to see if the container is full public beacuse used in gui task
+    bool isContainerFull();
+    
+    
+private:
+    // Pin Configurations
+    static constexpr int SONAR_TRIG_PIN = 4;  // Example pin, adjust as needed
+    static constexpr int SONAR_ECHO_PIN = 5;  // Example pin, adjust as needed
+
     // Configuration constants
     static constexpr unsigned long SLEEP_TIMEOUT = 10000;       // 10 seconds before going to sleep
     static constexpr unsigned long DOOR_OPEN_TIMEOUT = 5000;    // 5 seconds door open timeout
@@ -44,7 +54,7 @@ private:
     static constexpr float MAX_TEMP = 50.0;                     // Maximum temperature threshold
     static constexpr float WASTE_LEVEL_THRESHOLD = 0.3;         // Waste level threshold (from sonar implementation)
 
-    //test simulation defintiion
+    // Test simulation definition
     #define TEST_EMPTY_CONTAINER_TIMELIMIT  10000 // wait for 10 seconds before emptying the container | no gui test
     #define TEST_OVER_TEMP_TIMELIMIT        10000 // wait for 10 seconds before going to ready | no gui test
 
@@ -64,10 +74,10 @@ private:
     unsigned long lastStateChangeTime;
 
     // State change method
-    void setState(State newState);
+    //void setState(State newState);
 
-    // Helper methods
-    bool isContainerFull();
+    // Helper methods -> made public because they are used in guimessageservicetask
+    //bool isContainerFull();
 
     void enterSleepMode();
 };

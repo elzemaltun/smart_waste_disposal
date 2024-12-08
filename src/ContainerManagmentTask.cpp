@@ -1,6 +1,8 @@
 #include "ContainerManagementTask.h"
 #include "Debug.h"
 
+float currentTemp; // global definition    
+
 ContainerManagementTask::ContainerManagementTask() {
     currentState = IDLE;
     lastStateChangeTime = millis();
@@ -49,14 +51,9 @@ void ContainerManagementTask::setState(State newState) {
             break;
 
         case SLEEP:
-
-            //availableLed->switchOn();  // Keep L1 ON
             Debugger.println("Entered SLEEP state");
-
             enterSleepMode();
-
             setState(READY);    
-
             break;
 
         case READY:
@@ -108,7 +105,23 @@ void ContainerManagementTask::setState(State newState) {
     lastStateChangeTime = millis();
 }
 
- float currentTemp; // global definition    
+// Getter for current state
+ContainerManagementTask::State ContainerManagementTask::getCurrentState() {
+    return currentState;
+}
+
+// Getter for current temperature
+float ContainerManagementTask::getCurrentTemperature() {
+    return currentTemp;
+}
+
+// Getter for door state
+int ContainerManagementTask::getDoorState() {
+    if (currentState == DOOR_OPEN) return 1;
+    if (currentState == EMPTY_CONTAINER) return 2;
+    return 0; // Closed
+}
+
 
 void ContainerManagementTask::tick() {
     // Check for temperature first (highest priority)
@@ -178,8 +191,6 @@ void ContainerManagementTask::tick() {
 
         case FULL:
             // Wait for GUI "EMPTY" command (simulated here with a placeholder)
-            // In a real system, this would be replaced with an actual GUI command
-            // Wait 10 seconds before emptying the container | no gui test
             if (millis() - lastStateChangeTime > TEST_EMPTY_CONTAINER_TIMELIMIT) {
                 setState(EMPTY_CONTAINER);
             }
@@ -195,7 +206,6 @@ void ContainerManagementTask::tick() {
 
         case OVER_TEMP:
             // Wait for GUI "RESTORE" command (simulated here with a placeholder)
-            // Wait 10 seconds before returning to READY
             if (millis() - lastStateChangeTime > TEST_OVER_TEMP_TIMELIMIT) {
                 setState(READY);
             }
