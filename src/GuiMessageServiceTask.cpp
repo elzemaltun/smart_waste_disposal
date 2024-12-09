@@ -19,56 +19,37 @@ void GuiMessageServiceTask::init(int period) {
 }
 
 void GuiMessageServiceTask::tick() {
-    readSerial();
-    switch (currentParseState) {
-         case WAIT:
-            // Check if there is a message in the queue
-            if (!messageQueue.isEmpty()) {               
-                sendStatus();
-                Debugger.println("Processing message from queue");
-                String incomingMessage = messageQueue.dequeue(); // Retrieve the oldest message
-                processIncomingMessage(incomingMessage);
-                currentParseState = PROCESS; 
-            }
-            break;
+    readSerial();    
+    if (!messageQueue.isEmpty()) {               
+        
+        Debugger.println("Processing message from queue");
+        String incomingMessage = messageQueue.dequeue(); // Retrieve the oldest message
+        processIncomingMessage(incomingMessage);
 
-        case PROCESS:
-            if (emptyCommand) {
-                
-                Debugger.println("EMPTY CMD received");
-                //if (containerTask->getCurrentState() == ContainerManagementTask::FULL)
+        if (emptyCommand) {
+        
+            Debugger.println("EMPTY CMD received");
+            //if (containerTask->getCurrentState() == ContainerManagementTask::FULL)
+            containerTask->setState(ContainerManagementTask::EMPTY_CONTAINER);
+            /* if (containerTask->isContainerFull()) {
                 containerTask->setState(ContainerManagementTask::EMPTY_CONTAINER);
-
-                /* if (containerTask->isContainerFull()) {
-                    containerTask->setState(ContainerManagementTask::EMPTY_CONTAINER);
-                    statusCode = 0; // No error
-                } else {
-                    statusCode = 1; // FULL error
-                } */
-            }
-
-            if (restoreCommand) {
-
-                Debugger.println("RESTORE CMD received");
-                if (containerTask->getCurrentState() == ContainerManagementTask::OVER_TEMP) 
-                    containerTask->setState(ContainerManagementTask::READY);
-
-                /* if (containerTask->getCurrentState() == ContainerManagementTask::OVER_TEMP) {
-                    containerTask->setState(ContainerManagementTask::READY);
-                    statusCode = 0; // No error
-                } else {
-                    statusCode = 2; // Overheating error
-                } */
-            }
-
-            currentParseState = SEND_STATUS;
-            break;
-
-        case SEND_STATUS:
-            sendStatus();
-            resetParseState();
-            currentParseState = WAIT;
-            break;
+                statusCode = 0; // No error
+            } else {
+                statusCode = 1; // FULL error
+            } */
+        }
+        if (restoreCommand) {
+            Debugger.println("RESTORE CMD received");
+            if (containerTask->getCurrentState() == ContainerManagementTask::OVER_TEMP) 
+                containerTask->setState(ContainerManagementTask::READY);
+            /* if (containerTask->getCurrentState() == ContainerManagementTask::OVER_TEMP) {
+            containerTask->setState(ContainerManagementTask::READY);
+            statusCode = 0; // No error
+            } else {
+            statusCode = 2; // Overheating error
+            } */
+        }
+        sendStatus();
     }
 }
 
