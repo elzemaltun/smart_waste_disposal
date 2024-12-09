@@ -1,12 +1,15 @@
 #include "GuiMessageServiceTask.h"
 #include "Debug.h"
 
+//extern int statusCode;
+ int statusCode;
+
 GuiMessageServiceTask::GuiMessageServiceTask(ContainerManagementTask* containerTask) {
     this->containerTask = containerTask;
     this->currentParseState = WAIT;
     this->emptyCommand = false;
     this->restoreCommand = false;
-    this->statusCode = 0;
+    //this->statusCode = 0;
 }
 
 void GuiMessageServiceTask::init(int period) {
@@ -21,33 +24,42 @@ void GuiMessageServiceTask::tick() {
     switch (currentParseState) {
          case WAIT:
             // Check if there is a message in the queue
-            if (!messageQueue.isEmpty()) {
-
+            if (!messageQueue.isEmpty()) {               
                 sendStatus();
                 /* Debugger.println("Processing message from queue");
                 String incomingMessage = messageQueue.dequeue(); // Retrieve the oldest message
                 processIncomingMessage(incomingMessage);
-                currentParseState = PROCESS; */
+                currentParseState = PROCESS;  */
             }
             break;
 
         case PROCESS:
             if (emptyCommand) {
-                if (containerTask->isContainerFull()) {
+                
+                Debugger.println("EMPTY CMD received");
+                //if (containerTask->getCurrentState() == ContainerManagementTask::FULL)
+                containerTask->setState(ContainerManagementTask::EMPTY_CONTAINER);
+
+                /* if (containerTask->isContainerFull()) {
                     containerTask->setState(ContainerManagementTask::EMPTY_CONTAINER);
                     statusCode = 0; // No error
                 } else {
                     statusCode = 1; // FULL error
-                }
+                } */
             }
 
             if (restoreCommand) {
-                if (containerTask->getCurrentState() == ContainerManagementTask::OVER_TEMP) {
+
+                Debugger.println("RESTORE CMD received");
+                if (containerTask->getCurrentState() == ContainerManagementTask::OVER_TEMP) 
+                    containerTask->setState(ContainerManagementTask::READY);
+
+                /* if (containerTask->getCurrentState() == ContainerManagementTask::OVER_TEMP) {
                     containerTask->setState(ContainerManagementTask::READY);
                     statusCode = 0; // No error
                 } else {
                     statusCode = 2; // Overheating error
-                }
+                } */
             }
 
             currentParseState = SEND_STATUS;
@@ -100,7 +112,7 @@ void GuiMessageServiceTask::processIncomingMessage(const String& message) {
 
 void GuiMessageServiceTask::sendStatus() {
     // Calculate status values
-    int wasteLevel = containerTask->isContainerFull() ? 100 : 0; // Example waste level calculation
+    float wasteLevel = containerTask->getWasteLevel(); // Store distance as float
     float temperature = containerTask->getCurrentTemperature();
     int doorState = containerTask->getDoorState(); // 0: Closed, 1: Open, 2: Empty
 
@@ -116,7 +128,7 @@ void GuiMessageServiceTask::sendStatus() {
 void GuiMessageServiceTask::resetParseState() {
     emptyCommand = false;
     restoreCommand = false;
-    statusCode = 0;
+    //statusCode = 0;
 }
 
 // Continuous serial reading and buffering

@@ -24,7 +24,7 @@ private:
     // Variables for parsing
     bool emptyCommand;
     bool restoreCommand;
-    int statusCode;
+    //int statusCode;
 
     // Message queue for buffering serial data
     Queue<String> messageQueue;

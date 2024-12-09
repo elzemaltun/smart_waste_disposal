@@ -2,6 +2,7 @@
 #include "Debug.h"
 
 float currentTemp; // global definition    
+extern int doorStatus; // defined in ServoController
 
 ContainerManagementTask::ContainerManagementTask() {
     currentState = IDLE;
@@ -38,6 +39,10 @@ void ContainerManagementTask::init(int period) {
 
 bool ContainerManagementTask::isContainerFull() {
     return wasteLevelSensor->checkWasteLevel(SONAR_TRIG_PIN, SONAR_ECHO_PIN);
+}
+
+float ContainerManagementTask::getWasteLevel() {
+    return wasteLevelSensor->getDistance(SONAR_TRIG_PIN, SONAR_ECHO_PIN);
 }
 
 void ContainerManagementTask::setState(State newState) {
@@ -117,13 +122,12 @@ float ContainerManagementTask::getCurrentTemperature() {
 
 // Getter for door state
 int ContainerManagementTask::getDoorState() {
-    if (currentState == DOOR_OPEN) return 1;
-    if (currentState == EMPTY_CONTAINER) return 2;
-    return 0; // Closed
+    return doorStatus;
 }
 
 
 void ContainerManagementTask::tick() {
+
     // Check for temperature first (highest priority)
     currentTemp = tempSense->readTemperatureC();
     // Temperature override

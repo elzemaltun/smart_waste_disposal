@@ -19,8 +19,10 @@ public:
     void displayWasteReceived();
     void displayContainerFull();
     void displayProblemDetected();
+    void displayEmptying();
     void lcdPowerOff();
     void lcdPowerOn();
+    
 };
 
 #endif // LCDCONTROLLER_H

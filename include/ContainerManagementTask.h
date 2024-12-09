@@ -39,6 +39,7 @@ public:
 
     // check to see if the container is full public beacuse used in gui task
     bool isContainerFull();
+    float getWasteLevel(); 
     
     
 private:
