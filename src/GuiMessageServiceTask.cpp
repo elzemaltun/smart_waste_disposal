@@ -19,57 +19,43 @@ void GuiMessageServiceTask::init(int period) {
 }
 
 void GuiMessageServiceTask::tick() {
-    
+    //Debugger.println("gui service running");
+    if (!messageQueue.isEmpty()) {
+        
+        String incomingMessage = messageQueue.dequeue();
+        processIncomingMessage(incomingMessage);
 
-    switch (currentParseState) {
-         case WAIT:
-            // Check if there is a message in the queue
-            if (!messageQueue.isEmpty()) {               
-                sendStatus();
-                /* Debugger.println("Processing message from queue");
-                String incomingMessage = messageQueue.dequeue(); // Retrieve the oldest message
-                processIncomingMessage(incomingMessage);
-                currentParseState = PROCESS;  */
-            }
-            break;
+        if (emptyCommand) {
+            Debugger.println("EMPTY CMD received");
 
-        case PROCESS:
-            if (emptyCommand) {
-                
-                Debugger.println("EMPTY CMD received");
-                //if (containerTask->getCurrentState() == ContainerManagementTask::FULL)
+            if (containerTask->getCurrentState() == ContainerManagementTask::FULL){
                 containerTask->setState(ContainerManagementTask::EMPTY_CONTAINER);
+                }
+            /* if (containerTask->isContainerFull()) {
+                containerTask->setState(ContainerManagementTask::EMPTY_CONTAINER);
+                statusCode = 0; // No error
+            } else {
+                statusCode = 1; // FULL error
+            } */
+        }
 
-                /* if (containerTask->isContainerFull()) {
-                    containerTask->setState(ContainerManagementTask::EMPTY_CONTAINER);
-                    statusCode = 0; // No error
-                } else {
-                    statusCode = 1; // FULL error
-                } */
+        if (restoreCommand) {
+            if (containerTask->getCurrentState() == ContainerManagementTask::OVER_TEMP) {
+                containerTask->setState(ContainerManagementTask::IDLE);
             }
 
-            if (restoreCommand) {
+            /* Debugger.println("RESTORE CMD received");
+            if (containerTask->getCurrentState() == ContainerManagementTask::OVER_TEMP) {
+                containerTask->setState(ContainerManagementTask::READY);
+                statusCode = 0; // No error
+            } else {
+                statusCode = 2; // Overheating error
+            } */
+        }
 
-                Debugger.println("RESTORE CMD received");
-                if (containerTask->getCurrentState() == ContainerManagementTask::OVER_TEMP) 
-                    containerTask->setState(ContainerManagementTask::READY);
-
-                /* if (containerTask->getCurrentState() == ContainerManagementTask::OVER_TEMP) {
-                    containerTask->setState(ContainerManagementTask::READY);
-                    statusCode = 0; // No error
-                } else {
-                    statusCode = 2; // Overheating error
-                } */
-            }
-
-            currentParseState = SEND_STATUS;
-            break;
-
-        case SEND_STATUS:
-            sendStatus();
-            resetParseState();
-            currentParseState = WAIT;
-            break;
+        sendStatus(); // send reply back to gui
+        resetParseState(); // reset all states
+        Debugger.println("Message processed successfully"); 
     }
 }
 
@@ -87,7 +73,7 @@ void GuiMessageServiceTask::processIncomingMessage(const String& message) {
 
             // Validate and parse EMPTY command
             if (emptyStr.equals("1") || emptyStr.equals("0")) {
-                emptyCommand = emptyStr.toInt();
+                emptyCommand = emptyStr.toInt();    
             } else {
                 Debugger.println("Invalid EMPTY value");
                 return; // Abort parsing
@@ -101,7 +87,7 @@ void GuiMessageServiceTask::processIncomingMessage(const String& message) {
                 return; // Abort parsing
             }
 
-            Debugger.println("Message parsed successfully");
+            Debugger.println("Message parsed successfully. Empty: " + String(emptyCommand) + ", Restore: " + String(restoreCommand));
         } else {
             Debugger.println("Invalid message format: missing comma");
         }
@@ -133,15 +119,35 @@ void GuiMessageServiceTask::resetParseState() {
 
 // Continuous serial reading and buffering
 void GuiMessageServiceTask::readSerial() {
-    while (Serial.available()) {
+while (Serial.available()) {
         char ch = Serial.read();
-        if (ch == '\n') { // End of a message
-            if (incomingMessageBuffer.length() > 0) {
+
+        // Handle the start of a message
+        if (ch == '{') {
+            incomingMessageBuffer = "{"; // Reset and start fresh
+        } 
+        // Handle the end of a message
+        else if (ch == '}') {
+            incomingMessageBuffer += '}';
+
+            // Validate and enqueue only complete messages
+            if (incomingMessageBuffer.startsWith("{REQ,") && incomingMessageBuffer.endsWith("}")) {
                 messageQueue.enqueue(incomingMessageBuffer);
-                incomingMessageBuffer = "";
+            } else {
+                Debugger.println("Invalid message format");
             }
-        } else {
-            incomingMessageBuffer += ch;
+
+            incomingMessageBuffer = ""; // Clear buffer
+        } 
+        // Accumulate data only if within a message
+        else if (incomingMessageBuffer.length()>0) {
+            // Avoid buffer overflow
+            if (incomingMessageBuffer.length() < 256) { 
+                incomingMessageBuffer += ch;
+            } else {
+                Debugger.println("Message too long, discarding");
+                incomingMessageBuffer = ""; // Reset on overflow
+            }
         }
     }
 }

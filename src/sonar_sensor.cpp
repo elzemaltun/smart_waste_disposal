@@ -1,6 +1,8 @@
 #include "sonar_sensor.h"
 #include "Arduino.h"
 
+const float distanceTreshold = 0.3;
+
 void SonarSensor::init(int trigPin, int echoPin) {
     this->trigPin = trigPin;
     this->echoPin = echoPin;
@@ -26,8 +28,9 @@ float SonarSensor::getDistance(int trigPin, int echoPin) {
     return distance;
 }
 
+
+
 bool SonarSensor::checkWasteLevel(int trigPin, int echoPin) {
-    const float distanceTreshold = 0.3;
     bool isFull = getDistance(trigPin, echoPin) < distanceTreshold;
     return isFull;
 }

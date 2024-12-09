@@ -17,6 +17,12 @@ void LcdController::displayPressOpen() {
     lcd.print("to enter waste");
 }
 
+void LcdController::displayDoorClose() {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Door closing!");
+}
+
 void LcdController::displayEmptying() {
     lcd.clear();
     lcd.setCursor(0, 0);

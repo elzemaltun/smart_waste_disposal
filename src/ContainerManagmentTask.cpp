@@ -45,6 +45,22 @@ float ContainerManagementTask::getWasteLevel() {
     return wasteLevelSensor->getDistance(SONAR_TRIG_PIN, SONAR_ECHO_PIN);
 }
 
+/* int ContainerManagementTask::getGuiStatus() {
+    int statusCode = 0;
+    switch (currentState) {
+        case FULL:
+            statusCode = 1;
+            break;
+        case OVER_TEMP:
+            statusCode = 2;
+            break;
+        default:
+            statusCode = 0;  // No error
+            break;
+    }
+    return statusCode;
+} */
+
 void ContainerManagementTask::setState(State newState) {
     // One-time actions when entering a new state
     switch (newState) {
@@ -58,7 +74,7 @@ void ContainerManagementTask::setState(State newState) {
         case SLEEP:
             Debugger.println("Entered SLEEP state");
             enterSleepMode();
-            setState(READY);    
+            setState(IDLE);    
             break;
 
         case READY:
@@ -92,7 +108,7 @@ void ContainerManagementTask::setState(State newState) {
             containerDoor->emptyContainer();  // Rotate motor to -90°
             availableLed->switchOn();   // L1 ON
             alarmLed->switchOff();      // L2 OFF
-            display->displayPressOpen();
+            display->displayEmptying();
             Debugger.println("Entered EMPTY_CONTAINER state");
             break;
 
@@ -162,6 +178,10 @@ void ContainerManagementTask::tick() {
                 setState(DOOR_OPEN);
                 return;
             }
+            else if (millis() - lastStateChangeTime > 10000) {
+                setState(IDLE);
+                return;
+            }
             break;
 
         case DOOR_OPEN:
@@ -180,21 +200,21 @@ void ContainerManagementTask::tick() {
             break;
 
         case DOOR_CLOSE:
-            // Check waste level
-            if (isContainerFull()) {
-                setState(FULL);
-                return;
-            }
-
             // Transition back to READY after display time
             if (millis() - lastStateChangeTime > WASTE_DISPLAY_TIME) {
                 setState(READY);
                 return;
             }
+
+            // Check waste level
+            if (isContainerFull()) {
+                setState(FULL);
+                return;
+            }
             break;
 
         case FULL:
-            // Wait for GUI "EMPTY" command (simulated here with a placeholder)
+            // Wait for GUI "EMPTY" command or else after timeout
             if (millis() - lastStateChangeTime > TEST_EMPTY_CONTAINER_TIMELIMIT) {
                 setState(EMPTY_CONTAINER);
             }
@@ -220,17 +240,19 @@ void ContainerManagementTask::tick() {
 void ContainerManagementTask::enterSleepMode() {
     
     Debugger.println("Turning on sleep mode");
-    
+
     motionSense->enableInterrupt();
-    availableLed->switchOn();   // L1 ON
+    availableLed->switchOn();   
     display->lcdPowerOff();
 
-    set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+    // Configure sleep mode to SLEEP_MODE_PWR_SAVE
+    set_sleep_mode(SLEEP_MODE_PWR_SAVE);
     sleep_enable();
     sleep_mode();
-  
+
     // Execution resumes here after wake-up
     sleep_disable();
+
     motionSense->disableInterrupt();
-    display->lcdPowerOff();
+    display->lcdPowerOff();   
 }

@@ -40,6 +40,7 @@ public:
     // check to see if the container is full public beacuse used in gui task
     bool isContainerFull();
     float getWasteLevel(); 
+    int getguistatus();
     
     
 private:
@@ -50,7 +51,7 @@ private:
     // Configuration constants
     static constexpr unsigned long SLEEP_TIMEOUT = 10000;       // 10 seconds before going to sleep
     static constexpr unsigned long DOOR_OPEN_TIMEOUT = 5000;    // 5 seconds door open timeout
-    static constexpr unsigned long WASTE_DISPLAY_TIME = 2000;   // Display "WASTE RECEIVED" time
+    static constexpr unsigned long WASTE_DISPLAY_TIME = 3000;   // Display "WASTE RECEIVED" time
     static constexpr unsigned long EMPTY_CONTAINER_TIME = 3000; // Time to empty container
     static constexpr float MAX_TEMP = 50.0;                     // Maximum temperature threshold
     static constexpr float WASTE_LEVEL_THRESHOLD = 0.3;         // Waste level threshold (from sonar implementation)

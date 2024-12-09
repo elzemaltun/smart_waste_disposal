@@ -20,6 +20,7 @@ public:
     void displayContainerFull();
     void displayProblemDetected();
     void displayEmptying();
+    void displayDoorClose();
     void lcdPowerOff();
     void lcdPowerOn();
     
