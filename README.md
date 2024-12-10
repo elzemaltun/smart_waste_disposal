@@ -73,32 +73,34 @@ This project implements an embedded system called **Smart Waste Disposal Contain
 - **Features:**
   - Displays waste level percentage and temperature.
   - Provides buttons for emptying and restoring the container.
-  - Logs optional history of events.
+  - Logs optional history of events. (not working at the moment.)
 
 ---
 
 ## How to Run
 
 ### Arduino Setup
-1. Upload the Arduino sketch to the microcontroller.
-2. Connect the hardware components as per the schematic.
+1. Connect the hardware components as per the schematic.
+2. Build the Arduino code.
+3. Upload the Arduino sketch to the microcontroller.
 
 ### Operator Dashboard
-1. Compile and run the GUI application on a PC.
-2. Connect the Arduino to the PC via serial.
+1. Change the port name on the GUI side.
+2. Open a terminal.
+3. Go to the directory where swd_gui file is located.
+4. Type python swd_gui.py
 
 ### Demonstration Steps
 1. Turn on the system and observe the startup state.
 2. Simulate user actions: open, close, and enter waste.
-3. Fill the container (block the sınar sensor) and test the full state behavior.
+3. Fill the container (block the sonar sensor) and test the full state behavior.
 4. Use the GUI to empty and restore the container. (unavailable at the moment)
 5. Trigger a temperature alarm and restore the system. (unavailable at the moment)
 
 ---
 
 ## Current Issues
-- **GUI Functionality:** The GUI is currently symbolic as the messaging system does not work.
-- **Arduino Communication:** Arduino is unable to send messages to the GUI.
+- **GUI:** We do not log the history and show it on the GUI.
 
 ### Requirements
 - Use the `pyserial` library for Python to establish communication between Arduino and the GUI.
@@ -108,6 +110,5 @@ This project implements an embedded system called **Smart Waste Disposal Contain
 ---
 
 ## Future Improvements
-- Fix the messaging system to enable end-to-end communication between the Arduino and GUI.
 - Add history logging for waste disposal and alarms.
 
