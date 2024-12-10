@@ -41,23 +41,25 @@ public:
     bool isContainerFull();
     float getWasteLevel(); 
     
-    
-private:
     // Pin Configurations
-    static constexpr int SONAR_TRIG_PIN = 4;  // Example pin, adjust as needed
-    static constexpr int SONAR_ECHO_PIN = 5;  // Example pin, adjust as needed
+    #define SONAR_TRIG_PIN 4  
+    #define SONAR_ECHO_PIN 5  
 
     // Configuration constants
-    static constexpr unsigned long SLEEP_TIMEOUT = 10000;       // 10 seconds before going to sleep
-    static constexpr unsigned long DOOR_OPEN_TIMEOUT = 5000;    // 5 seconds door open timeout
-    static constexpr unsigned long WASTE_DISPLAY_TIME = 2000;   // Display "WASTE RECEIVED" time
-    static constexpr unsigned long EMPTY_CONTAINER_TIME = 3000; // Time to empty container
-    static constexpr float MAX_TEMP = 50.0;                     // Maximum temperature threshold
-    static constexpr float WASTE_LEVEL_THRESHOLD = 0.3;         // Waste level threshold (from sonar implementation)
+    #define SLEEP_TIMEOUT               10000   // 10 seconds before going to sleep
+    #define DOOR_OPEN_TIMEOUT           5000    // 5 seconds door open timeout
+    #define WASTE_DISPLAY_TIME          2000    // Display "WASTE RECEIVED" time
+    #define EMPTY_CONTAINER_TIME        3000    // Time to empty container
+    #define MAX_TEMP                    50.0    // Maximum temperature threshold
+    #define WASTE_LEVEL_THRESHOLD       0.3     // Waste level threshold (from sonar implementation)
 
     // Test simulation definition
     #define TEST_EMPTY_CONTAINER_TIMELIMIT  10000 // wait for 10 seconds before emptying the container | no gui test
     #define TEST_OVER_TEMP_TIMELIMIT        10000 // wait for 10 seconds before going to ready | no gui test
+    #define CHECK_TEMP_TIMELIMIT            5000 // wait for 10 seconds before going to sleep | no gui test
+    
+private:
+    
 
     // Component instances
     Button* doorOpenButton;

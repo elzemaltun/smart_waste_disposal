@@ -52,7 +52,7 @@ void LcdController::displayProblemDetected() {
     lcd.setCursor(0, 0);
     lcd.print("Problem Detected");
     lcd.setCursor(0, 1);
-    lcd.print("Check system");
+    lcd.print("Contact Admin");
 }
 
 void LcdController::lcdPowerOff() {

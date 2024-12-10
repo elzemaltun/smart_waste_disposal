@@ -1,6 +1,8 @@
 #include "ContainerManagementTask.h"
 #include "Debug.h"
 
+unsigned long detectTempTime = 0;
+
 float currentTemp; // global definition    
 extern int doorStatus; // defined in ServoController
 
@@ -58,7 +60,7 @@ void ContainerManagementTask::setState(State newState) {
         case SLEEP:
             Debugger.println("Entered SLEEP state");
             enterSleepMode();
-            setState(READY);    
+            setState(IDLE);    
             break;
 
         case READY:
@@ -92,7 +94,7 @@ void ContainerManagementTask::setState(State newState) {
             containerDoor->emptyContainer();  // Rotate motor to -90°
             availableLed->switchOn();   // L1 ON
             alarmLed->switchOff();      // L2 OFF
-            display->displayPressOpen();
+            display->displayEmptying();
             Debugger.println("Entered EMPTY_CONTAINER state");
             break;
 
@@ -130,11 +132,14 @@ void ContainerManagementTask::tick() {
 
     // Check for temperature first (highest priority)
     currentTemp = tempSense->readTemperatureC();
-    // Temperature override
     if (currentTemp > MAX_TEMP) {
-        Debugger.println("Over temp!");
-        setState(OVER_TEMP);
-        return;
+        if (millis() - detectTempTime >= CHECK_TEMP_TIMELIMIT) {  // Check if the temperature has been high for at least 5 seconds
+            Debugger.println("Over temp!");
+            setState(OVER_TEMP);
+            return;
+        }
+    } else {
+        detectTempTime = millis();  // Reset the timer when the temperature drops below the threshold
     }
 
     // State machine logic
@@ -160,6 +165,12 @@ void ContainerManagementTask::tick() {
             // Check for open button press
             if (doorOpenButton->isPressed()) {
                 setState(DOOR_OPEN);
+                return;
+            }
+
+            // Wait for 10 seconds before returning to IDLE
+            else if (millis() - lastStateChangeTime > 10000) {
+                setState(IDLE);
                 return;
             }
             break;
@@ -194,7 +205,7 @@ void ContainerManagementTask::tick() {
             break;
 
         case FULL:
-            // Wait for GUI "EMPTY" command (simulated here with a placeholder)
+            // Wait for GUI "EMPTY" command or timeout
             if (millis() - lastStateChangeTime > TEST_EMPTY_CONTAINER_TIMELIMIT) {
                 setState(EMPTY_CONTAINER);
             }
@@ -203,13 +214,13 @@ void ContainerManagementTask::tick() {
         case EMPTY_CONTAINER:
             // allow the container to be empty before returning to READY
             if (millis() - lastStateChangeTime > EMPTY_CONTAINER_TIME) {
-                setState(READY);
+                setState(IDLE);
                 return;
             }
             break;
 
         case OVER_TEMP:
-            // Wait for GUI "RESTORE" command (simulated here with a placeholder)
+            // Wait for GUI "RESTORE" command pr timeout
             if (millis() - lastStateChangeTime > TEST_OVER_TEMP_TIMELIMIT) {
                 setState(READY);
             }

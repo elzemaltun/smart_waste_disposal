@@ -29,8 +29,8 @@ void GuiMessageServiceTask::tick() {
         if (emptyCommand) {
         
             Debugger.println("EMPTY CMD received");
-            //if (containerTask->getCurrentState() == ContainerManagementTask::FULL)
-            containerTask->setState(ContainerManagementTask::EMPTY_CONTAINER);
+            if (containerTask->getCurrentState() == ContainerManagementTask::FULL)
+                containerTask->setState(ContainerManagementTask::EMPTY_CONTAINER);
             /* if (containerTask->isContainerFull()) {
                 containerTask->setState(ContainerManagementTask::EMPTY_CONTAINER);
                 statusCode = 0; // No error
@@ -50,6 +50,7 @@ void GuiMessageServiceTask::tick() {
             } */
         }
         sendStatus();
+        resetParseState();
     }
 }
 
