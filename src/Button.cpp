@@ -15,6 +15,16 @@ void Button::init() {
 bool Button::isPressed() {
     bool reading = digitalRead(pin);
 
+    if (reading == LOW) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/* bool Button::isPressed() {
+    bool reading = digitalRead(pin);
+
     if (reading != lastState) {
         lastDebounceTime = millis();
     }
@@ -32,3 +42,4 @@ bool Button::isPressed() {
     lastState = reading;
     return false;
 }
+ */

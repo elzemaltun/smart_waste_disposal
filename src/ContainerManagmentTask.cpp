@@ -206,25 +206,24 @@ void ContainerManagementTask::tick() {
 
         case FULL:
             // Wait for GUI "EMPTY" command or timeout
-            if (millis() - lastStateChangeTime > TEST_EMPTY_CONTAINER_TIMELIMIT) {
+            /* if (millis() - lastStateChangeTime > TEST_EMPTY_CONTAINER_TIMELIMIT) {
                 setState(EMPTY_CONTAINER);
-            }
-            return;
+            } */
+            break;
 
         case EMPTY_CONTAINER:
             // allow the container to be empty before returning to READY
             if (millis() - lastStateChangeTime > EMPTY_CONTAINER_TIME) {
                 containerDoor->closeDoor(); // close door after emptying
                 setState(IDLE);
-                return;
             }
             break;
 
         case OVER_TEMP:
             // Wait for GUI "RESTORE" command pr timeout
-            if (millis() - lastStateChangeTime > TEST_OVER_TEMP_TIMELIMIT) {
+            /* if (millis() - lastStateChangeTime > TEST_OVER_TEMP_TIMELIMIT) {
                 setState(READY);
-            }
+            } */
             return;
     }
 }
