@@ -8,8 +8,8 @@
 #include "LcdController.h"
 #include "ServoController.h"
 #include "TemperatureMonitor.h"
-#include "pir_sensor.h"
-#include "sonar_sensor.h"
+#include "PirSensor.h"
+#include "SonarSensor.h"
 #include "Led.h"
 
 class ContainerManagementTask : public Task {

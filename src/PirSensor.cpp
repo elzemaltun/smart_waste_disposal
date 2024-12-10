@@ -1,4 +1,4 @@
-#include "pir_sensor.h"
+#include "PirSensor.h"
 #include "Arduino.h"
 
 void PirSensor::init(int pin) {

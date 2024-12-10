@@ -1,4 +1,4 @@
-#include "sonar_sensor.h"
+#include "SonarSensor.h"
 #include "Arduino.h"
 
 void SonarSensor::init(int trigPin, int echoPin) {
