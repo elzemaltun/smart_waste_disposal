@@ -214,6 +214,7 @@ void ContainerManagementTask::tick() {
         case EMPTY_CONTAINER:
             // allow the container to be empty before returning to READY
             if (millis() - lastStateChangeTime > EMPTY_CONTAINER_TIME) {
+                containerDoor->closeDoor(); // close door after emptying
                 setState(IDLE);
                 return;
             }
